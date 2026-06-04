@@ -35,7 +35,20 @@ if uploaded_file is not None:
 
     output_path = "outputs/enhanced_audio.wav"
 
-    original_audio, enhanced_audio, sr = enhance_audio(input_path, output_path)
+    try:
+        with st.spinner("Processing audio... Please wait."):
+            original_audio, enhanced_audio, sr = enhance_audio(input_path, output_path)
+
+        st.success("Audio enhanced successfully!")
+
+    except Exception as e:
+        st.error("Something went wrong while processing the audio.")
+        st.write("Error details:", e)
+
+        if os.path.exists(input_path):
+            os.remove(input_path)
+
+        st.stop()
 
     st.subheader("Enhanced Audio")
     st.audio(output_path)
@@ -88,5 +101,5 @@ if uploaded_file is not None:
             mime="audio/wav"
         )
 
-    os.remove(input_path)
-    
+    if os.path.exists(input_path):
+        os.remove(input_path)
